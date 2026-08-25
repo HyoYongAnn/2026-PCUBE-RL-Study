@@ -1,0 +1,24 @@
+behaviors:
+  FoodCollector:                 # ← Behavior Parameters의 Behavior Name과 동일해야 함
+    trainer_type: ppo
+    hyperparameters:
+      batch_size: 1024
+      buffer_size: 10240         # batch_size의 정수배
+      learning_rate: 5.0e-4
+      beta: 8.0e-3
+      epsilon: 0.2
+      lambd: 0.95
+      num_epoch: 3
+    network_settings:
+      normalize: false
+      hidden_units: 128
+      num_layers: 2
+      vis_encode_type: simple    # 저해상도(20x20~)에서도 동작하는 가벼운 CNN 인코더
+                                  # nature_cnn(36x36+)/resnet(15x15+)보다 빠르지만 표현력은 낮음
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+        strength: 1.0
+    max_steps: 200000            # Ray 버전(foodcollector.yaml)과 동일하게 맞춰야 보상 비교가 공정함
+    time_horizon: 64
+    summary_freq: 10000
