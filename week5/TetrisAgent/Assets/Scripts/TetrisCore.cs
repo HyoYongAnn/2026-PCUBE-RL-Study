@@ -193,6 +193,50 @@ namespace Tetris
         }
 
 
+        // ---- 관전용 단계적 배치 (애니메이션) ----
+        // PlacePiece 는 즉시 하드드롭하지만, 이쪽은 목표(column,rotation)까지
+        // 회전 → 수평이동 → 낙하를 한 스텝씩 진행한다. 렌더러가 매 틱 StepPlacement()를
+        // 호출하면 조각이 움직이는 과정이 그대로 그려진다. 최종 결과는 PlacePiece 와 동일.
+        int placeTargetX, placeTargetRot;
+        bool placing;
+
+        // 목표 위치로 단계 배치 시작. 배치 불가면 false(상태 불변).
+        public bool BeginPlacement(int column, int rotation)
+        {
+            if (GameOver) return false;
+            if (!ResolvePlacement(column, rotation, out int rot, out Vector2Int pos)) return false;
+            placeTargetRot = Current == PieceType.O ? Rotation : rot; // O는 회전 무의미 → 스킵
+            placeTargetX = pos.x;
+            placing = true;
+            return true;
+        }
+
+        // 한 스텝 진행. 락(고정) 완료 시 true. 종료 보장(무한루프 없음) — 막히면 목표로 스냅.
+        public bool StepPlacement()
+        {
+            if (!placing) return true;
+
+            if (Rotation != placeTargetRot)                  // 1) 회전 정렬
+            {
+                int before = Rotation;
+                Rotate(1);
+                if (Rotation == before)                      // O/막힘 → 목표로 스냅
+                    { Rotation = placeTargetRot; Pos = new Vector2Int(placeTargetX, spawnPos[(int)Current].y); }
+                return false;
+            }
+            if (Pos.x != placeTargetX)                       // 2) 수평 이동 정렬
+            {
+                int before = Pos.x;
+                if (Pos.x < placeTargetX) MoveRight(); else MoveLeft();
+                if (Pos.x != before) return false;
+                Pos = new Vector2Int(placeTargetX, spawnPos[(int)Current].y); // 막힘 → 스냅
+            }
+            if (SoftDrop()) return false;                    // 3) 낙하
+            HardDrop();                                      // 바닥 → 락
+            placing = false;
+            return true;
+        }
+
         public bool Rotate(int dir) // +1 CW, -1 CCW
         {
             if (GameOver) return false;
@@ -469,6 +513,17 @@ namespace Tetris
             A(!g6.PlacePiece(9, 0), "범위 밖 배치 거부");
             A(CountOccupied(g6) == 0, "거부 시 상태 불변");
             A(g6.CanPlace(0, 0) && !g6.CanPlace(9, 0), "CanPlace 유효성");
+
+            // 단계적 배치(애니메이션)는 즉시 배치와 같은 최종 그리드를 만들고, 반드시 종료한다.
+            var gInstant = new TetrisCore(seed: 42);
+            var gStep = new TetrisCore(seed: 42);
+            A(gInstant.PlacePiece(0, 0), "즉시 배치 유효");
+            A(gStep.BeginPlacement(0, 0), "단계 배치 시작");
+            int steps = 0;
+            while (!gStep.StepPlacement()) if (++steps > 300) throw new Exception("SelfTest FAILED: StepPlacement 무한루프");
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                    A(gStep.Grid[x, y] == gInstant.Grid[x, y], "단계 배치 == 즉시 배치 그리드");
 
             return "SelfTest OK";
         }

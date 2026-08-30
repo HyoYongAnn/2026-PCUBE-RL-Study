@@ -24,6 +24,9 @@ namespace Tetris
         [Tooltip("true: 자체 코어로 사람이 직접 플레이. false: Bind(core)로 받은 외부 코어를 렌더만 함(학습 관전).")]
         public bool autoPlay = true;
 
+        [Tooltip("HUD 상단에 표시할 상태 문구(예: INFERENCE). 비우면 표시 안 함. 에이전트가 설정.")]
+        public string statusLabel = "";
+
         [Header("입력 반복(초)")]
         public float dasDelay = 0.15f;    // 첫 반복까지 지연
         public float arrRate = 0.04f;     // 반복 간격
@@ -206,6 +209,12 @@ namespace Tetris
             if (sp.z < 0f) return;                                    // 카메라 뒤면 그리지 않음
             var r = new Rect(sp.x, Screen.height - sp.y, 220f, 20f);  // GUI는 좌상단 원점
 
+            if (!string.IsNullOrEmpty(statusLabel))
+            {
+                var prev = GUI.color; GUI.color = Color.cyan;
+                GUI.Label(r, statusLabel, hudStyle); r.y += 20f;
+                GUI.color = prev;
+            }
             GUI.Label(r, name, hudStyle);                       r.y += 20f;
             GUI.Label(r, $"Score {game.Score}", hudStyle);      r.y += 20f;
             GUI.Label(r, $"Level {game.Level}", hudStyle);      r.y += 20f;
