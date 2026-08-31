@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3588502038055027793}
   - component: {fileID: 5353018433771864802}
-  - component: {fileID: 4274422391703370803}
   - component: {fileID: 3662915233229327701}
+  - component: {fileID: 1987232019100692869}
   m_Layer: 0
-  m_Name: RacerAgent
+  m_Name: MyRacerAgent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,31 +65,6 @@ MonoBehaviour:
   m_UseChildActuators: 1
   m_DeterministicInference: 1
   m_ObservableAttributeHandling: 0
---- !u!114 &4274422391703370803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 657716353977145219}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2dd90b89aa6ab142b2be784d755b252, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: RacingBotCup.Runtime::RacingBotCup.Agent.SampleRacerAgent
-  agentParameters:
-    maxStep: 0
-  hasUpgradedFromAgentParameters: 1
-  MaxStep: 0
-  m_Waypoints: 5
-  m_WaypointSpacing: 10
-  m_CurvatureWindows: 3
-  m_CurvatureWindowLength: 20
-  m_ProgressReward: 0.02
-  m_TimePenalty: 0.001
-  m_OffTrackPenalty: 0.01
-  m_LapBonus: 20
-  m_FailurePenalty: 3
 --- !u!114 &3662915233229327701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,3 +97,28 @@ MonoBehaviour:
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
   m_StartVerticalOffset: 0.6
   m_EndVerticalOffset: 0.6
+--- !u!114 &1987232019100692869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 657716353977145219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48deadfc9d0e1a040a54205846c1bffc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RacingBotCup.Runtime::RacingBotCup.Agent.MyRacerAgent
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 0
+  m_Waypoints: 5
+  m_WaypointSpacing: 10
+  m_CurvatureWindows: 3
+  m_CurvatureWindowLength: 20
+  m_ProgressReward: 0.02
+  m_TimePenalty: 0.001
+  m_OffTrackPenalty: 0.01
+  m_LapBonus: 20
+  m_FailurePenalty: 3
