@@ -85,7 +85,7 @@ MonoBehaviour:
   - OffTrack
   - Obstacle
   - Ramp
-  m_RaysPerDirection: 10
+  m_RaysPerDirection: 30
   m_MaxRayDegrees: 50
   m_SphereCastRadius: 0.4
   m_RayLength: 20
@@ -97,8 +97,8 @@ MonoBehaviour:
   m_UseBatchedRaycasts: 0
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
-  m_StartVerticalOffset: 0.6
-  m_EndVerticalOffset: 0.6
+  m_StartVerticalOffset: 0.01
+  m_EndVerticalOffset: 0.01
 --- !u!114 &1987232019100692869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,18 +121,11 @@ MonoBehaviour:
   m_CurvatureWindowLength: 20
   m_ProgressReward: 0.02
   m_TimePenalty: 0.001
-  m_OffTrackPenalty: 0.01
   m_LapBonus: 20
   m_FailurePenalty: 3
-  m_CurvatureFullCurve: 0.05
-  m_SteerCurvatureWindow: 15
-  m_SteerLookahead: 12
-  m_SteerPenaltyOnStraight: 0.05
-  m_SteerDeadZone: 0.1
-  m_ReverseOnStraightPenalty: 0.05
-  m_HeadingPenaltyOnStraight: 0.08
-  m_HeadingDeadZone: 0.05
-  m_TopSpeedOnStraightReward: 0.01
+  m_StuckWindowDecisions: 25
+  m_StuckDistanceThreshold: 1
+  m_StuckPenalty: 0.03
 --- !u!114 &219297490562849801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,10 +143,10 @@ MonoBehaviour:
   - Track
   - OffTrack
   - Ramp
-  m_RaysPerDirection: 5
+  m_RaysPerDirection: 20
   m_MaxRayDegrees: 45
   m_SphereCastRadius: 0.2
-  m_RayLength: 20
+  m_RayLength: 50
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 4294967039
@@ -181,7 +174,7 @@ MonoBehaviour:
   - Track
   - OffTrack
   - Ramp
-  m_RaysPerDirection: 5
+  m_RaysPerDirection: 20
   m_MaxRayDegrees: 80
   m_SphereCastRadius: 0.2
   m_RayLength: 10

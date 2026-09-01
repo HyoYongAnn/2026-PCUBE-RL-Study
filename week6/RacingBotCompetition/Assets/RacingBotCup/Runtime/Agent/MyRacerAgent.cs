@@ -40,14 +40,23 @@ namespace RacingBotCup.Agent
         [Tooltip("Charged every decision, so standing still is never comfortable.")]
         [SerializeField] float m_TimePenalty = 0.001f;
 
-        [Tooltip("Charged while any part of the car is off the racing surface.")]
-        [SerializeField] float m_OffTrackPenalty = 0.01f;
-
         [SerializeField] float m_LapBonus = 20f;
 
         [SerializeField] float m_FailurePenalty = 3f;
 
+        [Tooltip("진전 여부를 확인할 결정 구간 길이")]
+        [SerializeField] int m_StuckWindowDecisions = 25;
+
+        [Tooltip("이 창 동안 순변위가 이 거리(m) 미만이면 정지로 간주")]
+        [SerializeField] float m_StuckDistanceThreshold = 1f;
+
+        [Tooltip("정지 지속 페널티 (정지로 판정된 창 동안 매 틱 반복 부과)")]
+        [SerializeField] float m_StuckPenalty = 0.03f;
+
         float m_LastProgress;
+        float m_WindowStartProgress;
+        int m_WindowDecisionCount;
+        bool m_IsStuck;
 
         /// <summary>
         /// Total floats written below. Put this number in BehaviorParameters →
@@ -118,9 +127,19 @@ namespace RacingBotCup.Agent
 
             AddReward(-m_TimePenalty);
 
-            if (IsOffTrack)
+            // 정지 지속 시간 추적, 일정 시간 이상 멈춰있으면 짧은 창 동안만 후진+조향을 살짝 유도
+            m_WindowDecisionCount++;
+            if (m_WindowDecisionCount >= m_StuckWindowDecisions)
             {
-                AddReward(-m_OffTrackPenalty);
+                var netMoved = Mathf.Abs(progress - m_WindowStartProgress);
+                m_IsStuck = netMoved < m_StuckDistanceThreshold;
+                m_WindowStartProgress = progress;
+                m_WindowDecisionCount = 0;
+            }
+
+            if (m_IsStuck)
+            {
+                AddReward(-m_StuckPenalty);
             }
         }
 
@@ -138,6 +157,9 @@ namespace RacingBotCup.Agent
         public override void OnEpisodeBegin()
         {
             m_LastProgress = 0f;
+            m_WindowStartProgress = 0f;
+            m_WindowDecisionCount = 0;
+            m_IsStuck = false;
             base.OnEpisodeBegin();
         }
 
