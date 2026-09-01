@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 5353018433771864802}
   - component: {fileID: 3662915233229327701}
   - component: {fileID: 1987232019100692869}
-  - component: {fileID: 813317855575144450}
+  - component: {fileID: 219297490562849801}
+  - component: {fileID: 610052312954714534}
   m_Layer: 0
   m_Name: MyRacerAgent
   m_TagString: Untagged
@@ -84,10 +85,10 @@ MonoBehaviour:
   - OffTrack
   - Obstacle
   - Ramp
-  m_RaysPerDirection: 12
-  m_MaxRayDegrees: 80
+  m_RaysPerDirection: 10
+  m_MaxRayDegrees: 50
   m_SphereCastRadius: 0.4
-  m_RayLength: 60
+  m_RayLength: 20
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 4294967039
@@ -132,7 +133,7 @@ MonoBehaviour:
   m_HeadingPenaltyOnStraight: 0.08
   m_HeadingDeadZone: 0.05
   m_TopSpeedOnStraightReward: 0.01
---- !u!114 &813317855575144450
+--- !u!114 &219297490562849801
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,15 +142,56 @@ MonoBehaviour:
   m_GameObject: {fileID: 657716353977145219}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
+  m_Script: {fileID: 11500000, guid: 6bb6b867a41448888c1cd4f99643ad71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.ML-Agents::Unity.MLAgents.Sensors.CameraSensorComponent
-  m_Camera: {fileID: 0}
-  m_SensorName: CameraSensor
-  m_Width: 84
-  m_Height: 84
-  m_Grayscale: 0
-  m_ObservationType: 0
-  m_RuntimeCameraEnable: 0
+  m_EditorClassIdentifier: Unity.ML-Agents::Unity.MLAgents.Sensors.RayPerceptionSensorComponent3D
+  m_SensorName: far_ground
+  m_DetectableTags:
+  - Track
+  - OffTrack
+  - Ramp
+  m_RaysPerDirection: 5
+  m_MaxRayDegrees: 45
+  m_SphereCastRadius: 0.2
+  m_RayLength: 20
+  m_RayLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967039
   m_ObservationStacks: 1
-  m_Compression: 1
+  m_AlternatingRayOrder: 1
+  m_UseBatchedRaycasts: 0
+  rayHitColor: {r: 0, g: 1, b: 0, a: 1}
+  rayMissColor: {r: 1, g: 1, b: 1, a: 1}
+  m_StartVerticalOffset: 0.6
+  m_EndVerticalOffset: 0
+--- !u!114 &610052312954714534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 657716353977145219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bb6b867a41448888c1cd4f99643ad71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.ML-Agents::Unity.MLAgents.Sensors.RayPerceptionSensorComponent3D
+  m_SensorName: near_ground
+  m_DetectableTags:
+  - Track
+  - OffTrack
+  - Ramp
+  m_RaysPerDirection: 5
+  m_MaxRayDegrees: 80
+  m_SphereCastRadius: 0.2
+  m_RayLength: 10
+  m_RayLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967039
+  m_ObservationStacks: 1
+  m_AlternatingRayOrder: 1
+  m_UseBatchedRaycasts: 0
+  rayHitColor: {r: 0, g: 1, b: 0, a: 1}
+  rayMissColor: {r: 1, g: 1, b: 1, a: 1}
+  m_StartVerticalOffset: 0.6
+  m_EndVerticalOffset: -0.2

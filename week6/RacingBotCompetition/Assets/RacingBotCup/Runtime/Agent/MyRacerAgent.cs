@@ -35,7 +35,7 @@ namespace RacingBotCup.Agent
 
         [Header("Reward shaping")]
         [Tooltip("Per metre of forward progress along the circuit.")]
-        [SerializeField] float m_ProgressReward = 0.06f;
+        [SerializeField] float m_ProgressReward = 0.02f;
 
         [Tooltip("Charged every decision, so standing still is never comfortable.")]
         [SerializeField] float m_TimePenalty = 0.001f;
@@ -47,34 +47,7 @@ namespace RacingBotCup.Agent
 
         [SerializeField] float m_FailurePenalty = 3f;
 
-        [Tooltip("직선 판정 곡률 상한")]
-        [SerializeField] float m_CurvatureFullCurve = 0.05f;
-
-        [Tooltip("직선 판정 구간(m)")]
-        [SerializeField] float m_SteerCurvatureWindow = 15f;
-
-        [Tooltip("직선 판정 시 몇 m 앞을 볼지 (코너 진입 전 미리 억제 해제)")]
-        [SerializeField] float m_SteerLookahead = 12f;
-
-        [Tooltip("직선 조향 페널티 가중치")]
-        [SerializeField] float m_SteerPenaltyOnStraight = 0.05f;
-
-        [Tooltip("이 이하의 조향은 보정으로 간주해 페널티 면제")]
-        [SerializeField] float m_SteerDeadZone = 0.1f;
-
-        [Tooltip("직선에서 후진 페널티")]
-        [SerializeField] float m_ReverseOnStraightPenalty = 0.05f;
-
-        [Tooltip("직선에서 헤딩 정렬 페널티 가중치")]
-        [SerializeField] float m_HeadingPenaltyOnStraight = 0.08f;
-
-        [Tooltip("이 이하의 헤딩 오차(0~1)는 보정으로 간주해 페널티 면제")]
-        [SerializeField] float m_HeadingDeadZone = 0.05f;
-
-        [Tooltip("직선에서 최고속 유지 보상 가중치")]
-        [SerializeField] float m_TopSpeedOnStraightReward = 0.01f;
-
-        float m_BestProgress;
+        float m_LastProgress;
 
         /// <summary>
         /// Total floats written below. Put this number in BehaviorParameters →
@@ -107,7 +80,7 @@ namespace RacingBotCup.Agent
             // --- where it is on the circuit (3 floats) ---
             var projection = Projection;
             var halfWidth = Mathf.Max(0.5f, projection.Width * 0.5f);
-            sensor.AddObservation(projection.Lateral / halfWidth);   // ±1 at the road edges    
+            sensor.AddObservation(projection.Lateral / halfWidth);   // ±1 at the road edges
             sensor.AddObservation(projection.Width / 12f);
             sensor.AddObservation(IsOffTrack ? 1f : 0f);
 
@@ -137,49 +110,17 @@ namespace RacingBotCup.Agent
                 return;
             }
 
-            // 최고 도달 지점 기준 — 뒤로 갔다 다시 그 자리를 밟아도 중복 보상 없음, 왕복해도 손해도 이득도 없음
-            // Progress는 0~1 비율이라, 기존 m_ProgressReward(미터당 계수) 스케일을 유지하려고 트랙 길이를 다시 곱함
-            // 트랙 밖에서 번 진행거리는 보상하지 않음 (컷 방지, 이중보상 방지 위해 갱신은 그대로)
-            var progress = Checkpoints.Progress;
-            if (progress > m_BestProgress)
-            {
-                var metresGained = (progress - m_BestProgress) * Track.TotalLength;
-                if (!IsOffTrack)
-                {
-                    AddReward(metresGained * m_ProgressReward);
-                }
-                m_BestProgress = progress;
-            }
+            // Progress along the centreline is the primary signal. Measured as a delta so the agent
+            // is paid for advancing, not for being far along.
+            var progress = Checkpoints.TraveledDistance;
+            AddReward((progress - m_LastProgress) * m_ProgressReward);
+            m_LastProgress = progress;
 
             AddReward(-m_TimePenalty);
 
             if (IsOffTrack)
             {
                 AddReward(-m_OffTrackPenalty);
-            }
-
-            // 직선 조향 억제 (데드존 이하 보정 조향은 면제)
-            var curvature = Mathf.Abs(CurvatureAhead(m_SteerLookahead, m_SteerCurvatureWindow));
-            var straightness = Mathf.InverseLerp(m_CurvatureFullCurve, 0f, curvature);
-            var steerPenalty = Mathf.Max(0f, Mathf.Abs(steer) - m_SteerDeadZone);
-            AddReward(-steerPenalty * straightness * m_SteerPenaltyOnStraight);
-
-            // 직선에서 후진 페널티 (코너에서는 straightness가 0이라 개입 안 함)
-            if (Car.ForwardSpeed < 0f)
-            {
-                AddReward(-straightness * m_ReverseOnStraightPenalty);
-            }
-
-            // 직선에서 헤딩(진행방향)이 트랙과 어긋난 만큼 페널티 (데드존 이하 보정은 면제)
-            var headingErrorRaw = Mathf.Abs(Vector3.SignedAngle(Projection.Forward, Car.transform.forward, Vector3.up)) / 90f;
-            var headingError = Mathf.Max(0f, headingErrorRaw - m_HeadingDeadZone);
-            AddReward(-headingError * straightness * m_HeadingPenaltyOnStraight);
-
-            // 직선에서 최고속에 가까울수록 보상 (트랙 밖이면 지급 안 함, 관측과 동일하게 50f 기준 정규화)
-            if (!IsOffTrack)
-            {
-                var speedFraction = Mathf.Clamp01(Car.ForwardSpeed / 50f);
-                AddReward(speedFraction * straightness * m_TopSpeedOnStraightReward);
             }
         }
 
@@ -196,7 +137,7 @@ namespace RacingBotCup.Agent
 
         public override void OnEpisodeBegin()
         {
-            m_BestProgress = 0f;
+            m_LastProgress = 0f;
             base.OnEpisodeBegin();
         }
 
