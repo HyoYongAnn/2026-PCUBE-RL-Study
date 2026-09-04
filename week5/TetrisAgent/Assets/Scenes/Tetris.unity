@@ -381,7 +381,8 @@ MonoBehaviour:
   cellSize: 1
   ghostColor: {r: 1, g: 1, b: 1, a: 0.25}
   emptyColor: {r: 1, g: 1, b: 1, a: 0.06}
-  autoPlay: 1
+  autoPlay: 0
+  statusLabel: 
   dasDelay: 0.15
   arrRate: 0.04
 --- !u!4 &1756753121
@@ -399,65 +400,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1944831632
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1944831634}
-  - component: {fileID: 1944831633}
-  m_Layer: 0
-  m_Name: TetrisBoard (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1944831633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1944831632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f43af80af4c04bed98a00629d551299, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Tetris.TetrisBoard
-  blockSprites:
-  - {fileID: 3356406395973183004, guid: 3996356cdc2ea4841a64b2f60a4a7ae9, type: 3}
-  - {fileID: 3685237101826841866, guid: 2a3f53e97f7ce410c888bc0f6c79df14, type: 3}
-  - {fileID: 5131012411374403324, guid: 6b0d77dc45055467ea20bf6301a14755, type: 3}
-  - {fileID: -4027971289221615466, guid: 58c106ea34c934d23a04085fc5102427, type: 3}
-  - {fileID: -5062196652582300369, guid: 7bfc8e65e9c7d459a9af16975fab5044, type: 3}
-  - {fileID: -1536914372969001735, guid: e8f125ca809bb420da0de271a4bc85ae, type: 3}
-  - {fileID: 6626369496130969526, guid: 2918912c39444469f8c25a26b357e039, type: 3}
-  seed: 0
-  cellSize: 1
-  ghostColor: {r: 1, g: 1, b: 1, a: 0.25}
-  emptyColor: {r: 1, g: 1, b: 1, a: 0.06}
-  autoPlay: 1
-  dasDelay: 0.15
-  arrRate: 0.04
---- !u!4 &1944831634
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1944831632}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -465,4 +407,3 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1756753121}
-  - {fileID: 1944831634}
